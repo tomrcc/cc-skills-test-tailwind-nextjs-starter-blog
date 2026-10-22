@@ -1,9 +1,16 @@
-import { sortPosts, allCoreContent } from 'pliny/utils/contentlayer'
-import { allBlogs } from 'contentlayer/generated'
-import Main from './Main'
+import { Metadata } from 'next'
+import Blocks from '@/components/Blocks'
+import { getPage } from 'lib/pages'
 
-export default async function Page() {
-  const sortedPosts = sortPosts(allBlogs)
-  const posts = allCoreContent(sortedPosts)
-  return <Main posts={posts} />
+export function generateMetadata(): Metadata {
+  const { title, description } = getPage('index')
+  return {
+    ...(title && { title: { absolute: title } }),
+    ...(description && { description }),
+  }
+}
+
+export default function Page() {
+  const page = getPage('index')
+  return <Blocks blocks={page.content_blocks} />
 }

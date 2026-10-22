@@ -121,7 +121,7 @@ export const Blog = defineDocumentType(() => ({
         datePublished: doc.date,
         dateModified: doc.lastmod || doc.date,
         description: doc.summary,
-        image: doc.images ? doc.images[0] : siteMetadata.socialBanner,
+        image: doc.images?.length ? doc.images[0] : siteMetadata.socialBanner,
         url: `${siteMetadata.siteUrl}/${doc._raw.flattenedPath}`,
       }),
     },
@@ -147,9 +147,27 @@ export const Authors = defineDocumentType(() => ({
   computedFields,
 }))
 
+export const Page = defineDocumentType(() => ({
+  name: 'Page',
+  filePathPattern: 'pages/*.md',
+  contentType: 'mdx',
+  fields: {
+    _schema: { type: 'string' },
+    title: { type: 'string', required: true },
+    description: { type: 'string' },
+    heading: { type: 'string' },
+    author: { type: 'string' },
+    content_blocks: { type: 'json' },
+  },
+  computedFields: {
+    slug: { type: 'string', resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, '') },
+  },
+}))
+
 export default makeSource({
   contentDirPath: 'data',
-  documentTypes: [Blog, Authors],
+  contentDirInclude: ['blog', 'authors', 'pages'],
+  documentTypes: [Blog, Authors, Page],
   mdx: {
     cwd: process.cwd(),
     remarkPlugins: [

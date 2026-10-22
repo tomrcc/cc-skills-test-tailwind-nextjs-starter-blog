@@ -1,0 +1,776 @@
+paths:
+  static: public
+  uploads: public/static/images
+timezone: Etc/UTC
+
+markdown:
+  engine: commonmark
+  options:
+    html: true
+    gfm: true
+    table: true
+    strikethrough: true
+    treat_indentation_as_code: true
+    code_block_fences: "```"
+    escape_snippets_in_code_blocks: true
+
+_editables:
+  content:
+    blockquote: true
+    bold: true
+    italic: true
+    strike: true
+    link: true
+    bulletedlist: true
+    numberedlist: true
+    format: p h1 h2 h3 h4 h5 h6
+    image: true
+    table: true
+    code_block: true
+    code_inline: true
+    horizontalrule: true
+    snippet: true
+    removeformat: true
+    undo: true
+    redo: true
+
+collection_groups:
+  - heading: Content
+    collections:
+      - pages
+      - blog
+      - authors
+  - heading: Site
+    collections:
+      - data
+
+collections_config:
+  pages:
+    path: data/pages
+    glob:
+      - "*.md"
+    url: "/[slug]/"
+    name: Pages
+    icon: wysiwyg
+    disable_add_folder: true
+    create:
+      path: "[relative_base_path]/{title|slugify}.[ext]"
+    _enabled_editors:
+      - visual
+      - content
+      - data
+    schemas:
+      default:
+        path: .cloudcannon/schemas/page.md
+        name: Page
+        icon: article
+        _inputs:
+          title:
+            type: text
+            label: Title
+          description:
+            type: textarea
+            label: Description
+            comment: Used for search engines and link previews.
+      page_builder:
+        path: .cloudcannon/schemas/page-builder.md
+        name: Page Builder
+        icon: view_agenda
+        new_preview_url: /projects/
+        _enabled_editors:
+          - visual
+          - data
+        _inputs:
+          title:
+            type: text
+            label: Page title
+            comment: Shown in the browser tab and link previews.
+          description:
+            type: textarea
+            label: Page description
+            comment: Used for search engines and link previews.
+          content_blocks:
+            type: array
+            label: Sections
+            options:
+              structures: _structures.content_blocks
+      listing:
+        path: .cloudcannon/schemas/listing.md
+        name: Listing Page
+        icon: list
+        _enabled_editors:
+          - visual
+          - data
+        _inputs:
+          title:
+            type: text
+            label: Page title
+            comment: Shown in the browser tab and link previews.
+          heading:
+            type: text
+            label: Heading
+          description:
+            type: textarea
+            label: Page description
+            comment: Used for search engines and link previews. Leave empty to use the site description.
+      about:
+        path: .cloudcannon/schemas/about.md
+        name: About Page
+        icon: person
+        _enabled_editors:
+          - visual
+          - data
+        _inputs:
+          title:
+            type: text
+            label: Heading
+          author:
+            type: select
+            label: Author
+            comment: The author profile shown on this page.
+            options:
+              values: collections.authors
+              value_key: filename_without_ext
+              preview:
+                text:
+                  - key: name
+                image:
+                  - key: avatar
+    add_options:
+      - name: Page Builder
+        schema: page_builder
+        icon: view_agenda
+      - name: Page
+        schema: default
+        icon: article
+        editor: content
+    _inputs:
+      _schema:
+        hidden: true
+
+  blog:
+    path: data/blog
+    glob:
+      - "**/*.mdx"
+    url: "/blog/[full_slug]/"
+    name: Blog
+    icon: post_add
+    create:
+      path: "[relative_base_path]/{title|slugify}.[ext]"
+    _enabled_editors:
+      - visual
+      - content
+      - data
+    schemas:
+      default:
+        path: .cloudcannon/schemas/post.mdx
+        name: Blog Post
+        icon: post_add
+    add_options:
+      - name: Blog Post
+        schema: default
+        icon: post_add
+        editor: content
+    sort_options:
+      - key: date
+        order: desc
+    _inputs:
+      title:
+        type: text
+        label: Title
+      date:
+        type: date
+        label: Published date
+        instance_value: NOW
+      lastmod:
+        type: date
+        label: Last updated
+        comment: Leave empty if the post hasn't changed since it was published.
+      tags:
+        type: multiselect
+        label: Tags
+        options:
+          values: data.tags
+          allow_create: true
+      draft:
+        type: switch
+        label: Draft
+        comment: Drafts are left out of the live site.
+      summary:
+        type: textarea
+        label: Summary
+        comment: Shown in post lists, search results and link previews.
+      images:
+        type: array
+        label: Images
+        comment: The first image is the banner on the Banner layout and the link preview image.
+      images[*]:
+        type: image
+        label: Image
+      authors:
+        type: multiselect
+        label: Authors
+        options:
+          values: collections.authors
+          value_key: filename_without_ext
+          preview:
+            text:
+              - key: name
+            image:
+              - key: avatar
+      layout:
+        type: select
+        label: Post layout
+        options:
+          allow_empty: true
+          value_key: id
+          preview:
+            text:
+              - key: name
+          values:
+            - name: Standard (with sidebar)
+              id: PostLayout
+            - name: Simple
+              id: PostSimple
+            - name: Banner
+              id: PostBanner
+      bibliography:
+        type: text
+        label: Bibliography file
+        comment: File name of a .bib file in the data folder, for citations. Leave empty if the post has none.
+
+  authors:
+    path: data/authors
+    glob:
+      - "*.mdx"
+    name: Authors
+    icon: badge
+    disable_url: true
+    disable_add_folder: true
+    create:
+      path: "[relative_base_path]/{name|slugify}.[ext]"
+    _enabled_editors:
+      - content
+      - data
+    schemas:
+      default:
+        path: .cloudcannon/schemas/author.mdx
+        name: Author
+        icon: badge
+    add_options:
+      - name: Author
+        schema: default
+        icon: badge
+        editor: content
+    _inputs:
+      name:
+        type: text
+        label: Name
+      avatar:
+        type: image
+        label: Avatar
+      occupation:
+        type: text
+        label: Occupation
+      company:
+        type: text
+        label: Company
+      email:
+        type: email
+        label: Email
+      twitter:
+        type: url
+        label: X / Twitter URL
+      bluesky:
+        type: url
+        label: Bluesky URL
+      linkedin:
+        type: url
+        label: LinkedIn URL
+      github:
+        type: url
+        label: GitHub URL
+      layout:
+        hidden: true
+
+  data:
+    path: data
+    glob:
+      - "*.json"
+    name: Site settings
+    icon: settings
+    disable_url: true
+    disable_add: true
+    disable_add_folder: true
+    disable_file_actions: true
+    _enabled_editors:
+      - data
+
+data_config:
+  site:
+    path: data/site.json
+  navigation:
+    path: data/navigation.json
+  social:
+    path: data/social.json
+  tags:
+    path: data/tags.json
+
+file_config:
+  - glob: data/site.json
+    _inputs:
+      $:
+        type: object
+        options:
+          preview:
+            icon: settings
+      title:
+        type: text
+        label: Site title
+      author:
+        type: text
+        label: Site author
+        comment: Shown in the footer and as the feed author.
+      headerTitle:
+        type: text
+        label: Header title
+        comment: Shown next to the logo.
+      description:
+        type: textarea
+        label: Site description
+        comment: Used for search engines, link previews and the feed.
+      email:
+        type: email
+        label: Contact email
+        comment: Shown as the mail icon in the footer.
+      socialBanner:
+        type: image
+        label: Default link preview image
+      footerCredit:
+        type: text
+        label: Footer credit
+        comment: The small link at the bottom of every page. Leave empty to hide it.
+      footerCreditUrl:
+        type: url
+        label: Footer credit link
+  - glob: data/navigation.json
+    _inputs:
+      $:
+        type: array
+        label: Navigation
+        options:
+          structures: _structures.nav_links
+  - glob: data/social.json
+    _inputs:
+      $:
+        type: array
+        label: Social links
+        comment: Shown as icons in the footer, in this order.
+        options:
+          structures: _structures.social_links
+  - glob: data/tags.json
+    _inputs:
+      $:
+        type: array
+        label: Tags
+        comment: The tags offered when tagging a post.
+      $[*]:
+        type: text
+        label: Tag
+
+_select_data:
+  social_kinds:
+    - name: GitHub
+      id: github
+    - name: Facebook
+      id: facebook
+    - name: YouTube
+      id: youtube
+    - name: LinkedIn
+      id: linkedin
+    - name: Twitter
+      id: twitter
+    - name: Bluesky
+      id: bluesky
+    - name: X
+      id: x
+    - name: Instagram
+      id: instagram
+    - name: Threads
+      id: threads
+    - name: Medium
+      id: medium
+    - name: Mastodon
+      id: mastodon
+
+_structures:
+  content_blocks:
+    style: modal
+    values:
+      - label: Page header
+        icon: title
+        picker_preview:
+          text:
+            - Page header
+          icon:
+            - title
+        preview:
+          text:
+            - key: title
+            - Page header
+          subtext:
+            - key: description
+          icon:
+            - title
+        value:
+          _type: page_header
+          title:
+          description:
+        _inputs:
+          title:
+            type: text
+            label: Heading
+          description:
+            type: textarea
+            label: Intro
+      - label: Recent posts
+        icon: newspaper
+        picker_preview:
+          text:
+            - Recent posts
+          icon:
+            - newspaper
+        preview:
+          text:
+            - Recent posts
+          icon:
+            - newspaper
+        value:
+          _type: recent_posts
+          count: 5
+        _inputs:
+          count:
+            type: number
+            label: Number of posts
+            options:
+              min: 1
+      - label: Project grid
+        icon: grid_view
+        picker_preview:
+          text:
+            - Project grid
+          icon:
+            - grid_view
+        preview:
+          text:
+            - Project grid
+          icon:
+            - grid_view
+        value:
+          _type: project_grid
+          projects: []
+        _inputs:
+          projects:
+            type: array
+            label: Projects
+            options:
+              structures: _structures.project_cards
+  project_cards:
+    style: modal
+    values:
+      - label: Project
+        icon: folder_open
+        picker_preview:
+          text:
+            - Project
+          icon:
+            - folder_open
+        preview:
+          text:
+            - key: title
+            - Project
+          subtext:
+            - key: description
+          image:
+            - key: imgSrc
+          icon:
+            - folder_open
+        value:
+          title:
+          description:
+          imgSrc:
+          href:
+        _inputs:
+          title:
+            type: text
+            label: Title
+          description:
+            type: textarea
+            label: Description
+          imgSrc:
+            type: image
+            label: Image
+            comment: Shown at 16:9.
+          href:
+            type: text
+            label: Link
+            comment: A page on this site (/blog/my-post) or a full URL.
+  nav_links:
+    style: modal
+    values:
+      - label: Link
+        icon: link
+        picker_preview:
+          text:
+            - Link
+          icon:
+            - link
+        preview:
+          text:
+            - key: title
+            - Link
+          subtext:
+            - key: href
+          icon:
+            - link
+        value:
+          title:
+          href:
+        _inputs:
+          title:
+            type: text
+            label: Label
+          href:
+            type: text
+            label: Link
+            comment: A page on this site, such as /blog.
+  social_links:
+    style: modal
+    values:
+      - label: Social link
+        icon: share
+        picker_preview:
+          text:
+            - Social link
+          icon:
+            - share
+        preview:
+          text:
+            - key: kind
+            - Social link
+          subtext:
+            - key: href
+          icon:
+            - share
+        value:
+          kind:
+          href:
+        _inputs:
+          kind:
+            type: select
+            label: Network
+            options:
+              value_key: id
+              preview:
+                text:
+                  - key: name
+              values: _select_data.social_kinds
+          href:
+            type: url
+            label: Profile URL
+  gallery_images:
+    style: modal
+    values:
+      - label: Image
+        icon: image
+        picker_preview:
+          text:
+            - Image
+          icon:
+            - image
+        preview:
+          text:
+            - key: alt
+            - Image
+          image:
+            - key: src
+          icon:
+            - image
+        value:
+          src:
+          alt:
+        _inputs:
+          src:
+            type: image
+            label: Image
+          alt:
+            type: text
+            label: Alt text
+
+_snippets:
+  toc_inline:
+    snippet: "<TOCInline toc={props.toc} [[named_args]] />"
+    inline: false
+    preview:
+      text:
+        - Table of contents
+      icon: format_list_numbered
+    picker_preview:
+      text:
+        - Table of contents
+      icon: format_list_numbered
+    params:
+      named_args:
+        parser: key_values
+        options:
+          models:
+            - editor_key: exclude
+              type: string
+              optional: true
+              remove_empty: true
+            - editor_key: toHeading
+              type: number
+              optional: true
+              remove_empty: true
+            - editor_key: asDisclosure
+              type: boolean
+              optional: true
+              remove_empty: true
+          format:
+            root_value_delimiter: "="
+            root_pair_delimiter:
+              - " "
+            string_boundary:
+              - '"'
+            root_value_boundary:
+              start: "{"
+              end: "}"
+            root_value_boundary_optional:
+              string: true
+            allow_numbers: true
+            allow_booleans: true
+            allow_implied_values: true
+            forbidden_tokens:
+              - "/>"
+    _inputs:
+      exclude:
+        type: text
+        label: Leave out heading
+        comment: The text of one heading to leave out of the list.
+      toHeading:
+        type: number
+        label: Deepest heading level
+        comment: For example 2 lists only second-level headings. Leave empty for all.
+        options:
+          min: 1
+          max: 6
+      asDisclosure:
+        type: switch
+        label: Collapsible
+  gallery:
+    template: mdx_component
+    inline: false
+    view: gallery
+    preview:
+      text:
+        - Image gallery
+      icon: photo_library
+      gallery:
+        image:
+          - key: images[0].src
+        fit: cover
+    picker_preview:
+      text:
+        - Image gallery
+      icon: photo_library
+    definitions:
+      component_name: Gallery
+      named_args:
+        - editor_key: images
+          type: array
+    _inputs:
+      images:
+        type: array
+        label: Images
+        options:
+          structures: _structures.gallery_images
+  video:
+    snippet: |-
+      <video controls>
+        <source [[source_attrs]] type="video/webm" />
+      </video>
+    inline: false
+    preview:
+      text:
+        - Video
+      icon: videocam
+    picker_preview:
+      text:
+        - Video
+      icon: videocam
+    params:
+      source_attrs:
+        parser: key_values
+        options:
+          models:
+            - editor_key: src
+              type: string
+          format:
+            root_value_delimiter: "="
+            string_boundary:
+              - '"'
+    _inputs:
+      src:
+        type: url
+        label: Video URL
+        comment: A .webm video file.
+  math_block:
+    snippet: |-
+      $$
+      [[math]]
+      $$
+    inline: false
+    preview:
+      text:
+        - Equation
+      icon: functions
+    picker_preview:
+      text:
+        - Equation
+      icon: functions
+    params:
+      math:
+        parser: content
+        options:
+          editor_key: math
+          raw: true
+          trim_text: true
+    _inputs:
+      math:
+        type: code
+        label: LaTeX
+  math_inline:
+    snippet: "$[[math]]$"
+    inline: true
+    preview:
+      text:
+        - key: math
+        - Inline equation
+      icon: functions
+    picker_preview:
+      text:
+        - Inline equation
+      icon: functions
+    params:
+      math:
+        parser: content
+        options:
+          editor_key: math
+          raw: true
+          forbidden_tokens:
+            - "$"
+            - "\n"
+    _inputs:
+      math:
+        type: text
+        label: LaTeX

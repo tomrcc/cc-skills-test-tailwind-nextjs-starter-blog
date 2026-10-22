@@ -28,8 +28,10 @@ const components = {
   bluesky: Bluesky,
 }
 
+export type SocialKind = keyof typeof components
+
 type SocialIconProps = {
-  kind: keyof typeof components
+  kind: SocialKind
   href: string | undefined
   size?: number
 }

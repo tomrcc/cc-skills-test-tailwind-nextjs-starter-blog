@@ -1,0 +1,7 @@
+[
+  { "title": "Home", "href": "/" },
+  { "title": "Blog", "href": "/blog" },
+  { "title": "Tags", "href": "/tags" },
+  { "title": "Projects", "href": "/projects" },
+  { "title": "About", "href": "/about" }
+]

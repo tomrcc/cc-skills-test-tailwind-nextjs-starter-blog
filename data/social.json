@@ -1,0 +1,11 @@
+[
+  { "kind": "github", "href": "https://github.com" },
+  { "kind": "facebook", "href": "https://facebook.com" },
+  { "kind": "youtube", "href": "https://youtube.com" },
+  { "kind": "linkedin", "href": "https://www.linkedin.com" },
+  { "kind": "bluesky", "href": "https://bsky.app/" },
+  { "kind": "x", "href": "https://twitter.com/x" },
+  { "kind": "instagram", "href": "https://www.instagram.com" },
+  { "kind": "threads", "href": "https://www.threads.net" },
+  { "kind": "medium", "href": "https://medium.com" }
+]

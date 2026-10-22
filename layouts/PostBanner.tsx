@@ -19,8 +19,8 @@ interface LayoutProps {
 
 export default function PostMinimal({ content, next, prev, children }: LayoutProps) {
   const { slug, title, images } = content
-  const displayImage =
-    images && images.length > 0 ? images[0] : 'https://picsum.photos/seed/picsum/800/400'
+  const hasImage = images && images.length > 0
+  const displayImage = hasImage ? images[0] : 'https://picsum.photos/seed/picsum/800/400'
 
   return (
     <SectionContainer>
@@ -30,16 +30,26 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
           <div className="space-y-1 pb-10 text-center dark:border-gray-700">
             <div className="w-full">
               <Bleed>
-                <div className="relative aspect-2/1 w-full">
+                <div
+                  className="relative aspect-2/1 w-full"
+                  {...(hasImage && { 'data-editable': 'image', 'data-prop-src': 'images.0' })}
+                >
                   <Image src={displayImage} alt={title} fill className="object-cover" />
                 </div>
               </Bleed>
             </div>
             <div className="relative pt-10">
-              <PageTitle>{title}</PageTitle>
+              <PageTitle editableProp="title">{title}</PageTitle>
             </div>
           </div>
-          <div className="prose dark:prose-invert max-w-none py-4">{children}</div>
+          <div
+            className="prose dark:prose-invert max-w-none py-4"
+            data-editable="text"
+            data-type="block"
+            data-prop="@content"
+          >
+            {children}
+          </div>
           {siteMetadata.comments && (
             <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300" id="comment">
               <Comments slug={slug} />

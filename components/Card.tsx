@@ -2,7 +2,7 @@ import Image from './Image'
 import Link from './Link'
 
 const Card = ({ title, description, imgSrc, href }) => (
-  <div className="md max-w-[544px] p-4 md:w-1/2">
+  <div className="md max-w-[544px] p-4 md:w-1/2" data-editable="array-item">
     <div
       className={`${
         imgSrc && 'h-full'
@@ -17,6 +17,8 @@ const Card = ({ title, description, imgSrc, href }) => (
               className="object-cover object-center md:h-36 lg:h-48"
               width={544}
               height={306}
+              data-editable="image"
+              data-prop-src="imgSrc"
             />
           </Link>
         ) : (
@@ -26,19 +28,27 @@ const Card = ({ title, description, imgSrc, href }) => (
             className="object-cover object-center md:h-36 lg:h-48"
             width={544}
             height={306}
+            data-editable="image"
+            data-prop-src="imgSrc"
           />
         ))}
       <div className="p-6">
         <h2 className="mb-3 text-2xl leading-8 font-bold tracking-tight">
           {href ? (
             <Link href={href} aria-label={`Link to ${title}`}>
-              {title}
+              <editable-text data-prop="title">{title}</editable-text>
             </Link>
           ) : (
-            title
+            <editable-text data-prop="title">{title}</editable-text>
           )}
         </h2>
-        <p className="prose mb-3 max-w-none text-gray-500 dark:text-gray-400">{description}</p>
+        <p
+          className="prose mb-3 max-w-none text-gray-500 dark:text-gray-400"
+          data-editable="text"
+          data-prop="description"
+        >
+          {description}
+        </p>
         {href && (
           <Link
             href={href}

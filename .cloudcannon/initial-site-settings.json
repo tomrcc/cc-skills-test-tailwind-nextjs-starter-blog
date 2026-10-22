@@ -1,0 +1,21 @@
+{
+  "ssg": "nextjs",
+  "mode": "hosted",
+  "build": {
+    "install_command": "yarn install --immutable",
+    "build_command": "yarn build",
+    "output_path": "out",
+    "preserved_paths": "node_modules/,.next/",
+    "node_version": "24",
+    "environment_variables": [
+      {
+        "key": "EXPORT",
+        "value": "1"
+      },
+      {
+        "key": "UNOPTIMIZED",
+        "value": "1"
+      }
+    ]
+  }
+}

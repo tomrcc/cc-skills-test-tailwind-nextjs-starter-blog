@@ -1,0 +1,10 @@
+{
+  "title": "Next.js Starter Blog",
+  "author": "Tails Azimuth",
+  "headerTitle": "TailwindBlog",
+  "description": "A blog created with Next.js and Tailwind.css",
+  "email": "address@yoursite.com",
+  "socialBanner": "/static/images/twitter-card.png",
+  "footerCredit": "Tailwind Nextjs Theme",
+  "footerCreditUrl": "https://github.com/timlrx/tailwind-nextjs-starter-blog"
+}
