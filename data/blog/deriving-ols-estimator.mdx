@@ -1,33 +1,36 @@
 ---
+_schema: default
 title: Deriving the OLS Estimator
-date: '2020-12-21'
-tags: ['next js', 'math', 'ols']
-draft: false
-summary: 'How to derive the OLS Estimator with matrix notation and a tour of math typesetting using markdown with the help of KaTeX.'
+date: 2020-12-21T00:00:00Z
 lastmod:
+tags:
+  - next js
+  - math
+  - ols
+draft: false
+summary: How to derive the OLS Estimator with matrix notation and a tour of math
+  typesetting using markdown with the help of KaTeX.
 images: []
-authors: ['default']
+authors:
+  - default
 layout:
 bibliography:
 ---
-
 # Introduction
 
-Parsing and display of math equations is included in this blog template. Parsing of math is enabled by `remark-math` and `rehype-katex`.
-KaTeX and its associated font is included in `_document.js` so feel free to use it on any page.
-[^footnote]
+Parsing EDITED! and display of math equations is included in this blog template. Parsing of math is enabled by `remark-math` and `rehype-katex`. KaTeX and its associated font is included in `_document.js` so feel free to use it on any page. \[^footnote\]
 
-[^footnote]: For the full list of supported TeX functions, check out the [KaTeX documentation](https://katex.org/docs/supported.html)
+\[^footnote\]: For the full list of supported TeX functions, check out the [KaTeX documentation](https://katex.org/docs/supported.html)
 
 Inline math symbols can be included by enclosing the term between the `$` symbol.
 
 Math code blocks are denoted by `$$`.
 
-If you intend to use the `$` sign instead of math, you can escape it (`\$`), or specify the HTML entity (`&dollar;`) [^2]
+If you intend to use the `$` sign instead of math, you can escape it (`\$`), or specify the HTML entity (`&dollar;`) \[^2\]
 
 Inline or manually enumerated footnotes are also supported. Click on the links above to see them in action.
 
-[^2]: \$10 and &dollar;20.
+\[^2\]: $10 and $20.
 
 # Deriving the OLS Estimator
 
@@ -103,9 +106,9 @@ At times it might be easier to use vector notation. For consistency, I will use 
 
 ## Least Squares
 
-**Start**:  
-$$y_i = \mathbf{x}'_i \beta + u_i$$
+**Start**:<br /> $$y\_i = \\mathbf\{x\}'*i \\beta + u\_i*
 
+$$
 **Assumptions**:
 
 1. Linearity (given above)
@@ -113,14 +116,16 @@ $$y_i = \mathbf{x}'_i \beta + u_i$$
 3. rank($\mathbf{X}$) = $k$ (no multi-collinearity i.e. full rank)
 4. $Var(\mathbf{U}|\mathbf{X}) = \sigma^2 I_n$ (Homoskedascity)
 
-**Aim**:  
+**Aim**:
 Find $\beta$ that minimises the sum of squared errors:
-
-$$
-Q = \sum_{i=1}^{n}{u_i^2} = \sum_{i=1}^{n}{(y_i - \mathbf{x}'_i\beta)^2} = (Y-X\beta)'(Y-X\beta)
 $$
 
-**Solution**:  
+ *Q = \\sum*\{i=1\}^\{n\}\{u\_i^2\} = \\sum\_\{i=1\}^\{n\}\{(y\_i - \\mathbf\{x\}'\_i\\beta)^2\} = (Y-X\\beta)'(Y-X\\beta)
+
+&nbsp;
+
+$$
+**Solution**:
 Hints: $Q$ is a $1 \times 1$ scalar, by symmetry $\frac{\partial b'Ab}{\partial b} = 2Ab$.
 
 Take matrix derivative w.r.t $\beta$:
@@ -135,14 +140,6 @@ Take matrix derivative w.r.t $\beta$:
                    & = (\sum^{n} \mathbf{x}_i \mathbf{x}'_i)^{-1} \sum^{n} \mathbf{x}_i y_i
 \end{aligned}
 ```
+$$
 
-$$
-\begin{aligned}
-  \min Q           & = \min_{\beta} \mathbf{Y}'\mathbf{Y} - 2\beta'\mathbf{X}'\mathbf{Y} +
-  \beta'\mathbf{X}'\mathbf{X}\beta \\
-                   & = \min_{\beta} - 2\beta'\mathbf{X}'\mathbf{Y} + \beta'\mathbf{X}'\mathbf{X}\beta \\
-  \text{[FOC]}~~~0 & =  - 2\mathbf{X}'\mathbf{Y} + 2\mathbf{X}'\mathbf{X}\hat{\beta}                  \\
-  \hat{\beta}      & = (\mathbf{X}'\mathbf{X})^{-1}\mathbf{X}'\mathbf{Y}                              \\
-                   & = (\sum^{n} \mathbf{x}_i \mathbf{x}'_i)^{-1} \sum^{n} \mathbf{x}_i y_i
-\end{aligned}
-$$
+ \\begin\{aligned\} \\min Q & = \\min\_\{\\beta\} \\mathbf\{Y\}'\\mathbf\{Y\} - 2\\beta'\\mathbf\{X\}'\\mathbf\{Y\} + \\beta'\\mathbf\{X\}'\\mathbf\{X\}\\beta \\\\ & = \\min\_\{\\beta\} - 2\\beta'\\mathbf\{X\}'\\mathbf\{Y\} + \\beta'\\mathbf\{X\}'\\mathbf\{X\}\\beta \\\\ \\text\{\[FOC\]\}~~~0 & = - 2\\mathbf\{X\}'\\mathbf\{Y\} + 2\\mathbf\{X\}'\\mathbf\{X\}\\hat\{\\beta\} \\\\ \\hat\{\\beta\} & = (\\mathbf\{X\}'\\mathbf\{X\})^\{-1\}\\mathbf\{X\}'\\mathbf\{Y\} \\\\ & = (\\sum^\{n\} \\mathbf\{x\}\_i \\mathbf\{x\}'\_i)^\{-1\} \\sum^\{n\} \\mathbf\{x\}\_i y\_i \\end\{aligned\} $$
