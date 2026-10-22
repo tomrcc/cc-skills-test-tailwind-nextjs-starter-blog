@@ -578,6 +578,35 @@ _structures:
           href:
             type: url
             label: Profile URL
+  gallery_images:
+    style: modal
+    values:
+      - label: Image
+        icon: image
+        picker_preview:
+          text:
+            - Image
+          icon:
+            - image
+        preview:
+          text:
+            - key: alt
+            - Image
+          image:
+            - key: src
+          icon:
+            - image
+        value:
+          src:
+          alt:
+        _inputs:
+          src:
+            type: image
+            label: Image
+          alt:
+            type: text
+            label: Alt text
+
 _snippets:
   toc_inline:
     snippet: "<TOCInline toc={props.toc} [[named_args]] />"
@@ -665,35 +694,6 @@ _snippets:
         label: Images
         options:
           structures: _structures.gallery_images
-    _structures:
-      gallery_images:
-        style: modal
-        values:
-          - label: Image
-            icon: image
-            picker_preview:
-              text:
-                - Image
-              icon:
-                - image
-            preview:
-              text:
-                - key: alt
-                - Image
-              image:
-                - key: src
-              icon:
-                - image
-            value:
-              src:
-              alt:
-            _inputs:
-              src:
-                type: image
-                label: Image
-              alt:
-                type: text
-                label: Alt text
   video:
     snippet: |-
       <video controls>
