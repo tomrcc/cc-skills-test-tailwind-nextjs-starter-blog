@@ -129,6 +129,14 @@ Tracked here (no todo tool on this host).
   - `/blog/pictures-of-canada/` (Banner): `title`, `@content`, `images.0` image, prev/next `@file` titles.
 - Production page load: HTML references only the shared chunks. `@cloudcannon/editable-regions/react` (the `EditableRegions` root, a few hundred bytes of listeners for `cloudcannon:load` / `editable-regions:load`) is in the shared chunk, as the docs require. The registration chunk (component map, `registerReactComponent` calls, author JSON) is referenced by no HTML file, only by the webpack runtime's chunk map, and loads only after `window.inEditorMode`.
 
+## Hydration
+
+Every exported page hydrates without a React error (checked with headless Chromium on `out/`, served statically, on `/`, `/about/`, `/projects/`, `/tags/`, `/blog/` and one post per layout).
+
+- `components/MobileNav.tsx` renders its Headless UI `Transition`/`Dialog` only after mount. Headless UI 2.2.9 renders a hidden `<span>` for the closed `unmount={false}` dialog on the server and nothing in that spot on the first client render. React then throws #418 (`args[]=HTML`) on every page. The original template's static export (commit `6287e59`, `EXPORT=1 UNOPTIMIZED=1`) shows the same error, so it doesn't come from the editor or the regions.
+- After a hydration error, React drops the server DOM and renders the whole document again on the client (`clearContainerSparingly` in `react-dom-client`: everything in `<html>`, `<head>` and `<body>` except scripts, `<style>` and stylesheet links is removed). In the Visual Editor this showed as rows of unstyled region controls and a missing "Read more" link on `/` and `/about/`. That matches the row in `cloudcannon-visual-editing/troubleshooting.md` for "Rows of unstyled white editor buttons appear in the page flow".
+- Region code doesn't write to the DOM before hydration. Every region sits inside the `EditableRegions` root, and a region whose parent hasn't mounted returns early in `pushValue` (`nodes/editable.ts`, `parentMounted`). That includes `@data`/`@file` regions.
+
 ## Decisions and why
 
 - **Computed block props (content.md Q4).**
@@ -142,10 +150,13 @@ Tracked here (no todo tool on this host).
 - **Default author rule:** `PostAuthors` and the post route both use `authors?.length ? authors : ['default']`, so an emptied multiselect (`[]`) shows the default author as the input comment says.
 - **Blog `date` input** gets a comment that the page updates after the next build.
 - **No editor click guard on text regions inside links** (open question 1).
+- **Mobile nav dialog mounts after hydration**, so the server HTML and the first client render match (see § Hydration). The menu works as before: the dialog is in the portal, hidden, until the button opens it.
 
 ## Files changed
 
 Phase scope: `app/layout.tsx`, `app/[slug]/page.tsx`, `app/cloudcannon/componentMap.ts`, `app/cloudcannon/registerComponents.ts` (new), `components/CloudCannonEditor.tsx` (new), `components/RawTemplate.tsx` (new), `components/PostAuthors.tsx` (new), `components/PostTags.tsx` (new), `components/Blocks.tsx`, `components/blocks/{PageHeader,LatestPosts,ProjectGrid,AuthorProfile}.tsx`, `components/Card.tsx`, `components/Header.tsx`, `components/Footer.tsx`, `components/PageTitle.tsx`, `layouts/Post{Layout,Simple,Banner}.tsx`, `lib/authors.ts` (new), `lib/files.ts` (new), `lib/pages.ts`, `css/tailwind.css`, `package.json`, `yarn.lock`.
+
+Hydration fix: `components/MobileNav.tsx`.
 
 Cross-phase (small, mechanical): `cloudcannon.config.yml` (blog `date` comment; validated against the local schema with ajv, since the CLI wasn't available), `app/blog/[...slug]/page.tsx` (default-author rule matches `PostAuthors`).
 
