@@ -45,3 +45,6 @@ yarn-error.log*
 
 # Contentlayer
 .contentlayer
+
+# CloudCannon schema references
+.cloudcannon/migration/*.schema.json

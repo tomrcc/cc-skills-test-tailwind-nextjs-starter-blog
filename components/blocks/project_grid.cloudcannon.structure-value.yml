@@ -1,0 +1,21 @@
+label: Project grid
+icon: grid_view
+picker_preview:
+  text:
+    - Project grid
+  icon:
+    - grid_view
+preview:
+  text:
+    - Project grid
+  icon:
+    - grid_view
+value:
+  _type: project_grid
+  items: []
+_inputs:
+  items:
+    type: array
+    label: Projects
+    options:
+      structures: _structures.project_items

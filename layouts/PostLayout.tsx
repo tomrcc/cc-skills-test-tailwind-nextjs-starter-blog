@@ -5,9 +5,10 @@ import Comments from '@/components/Comments'
 import Link from '@/components/Link'
 import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
-import Image from '@/components/Image'
-import Tag from '@/components/Tag'
+import PostAuthors from '@/components/PostAuthors'
+import PostTags from '@/components/PostTags'
 import siteMetadata from '@/data/siteMetadata'
+import { contentFile } from 'lib/files'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 const editUrl = (path) => `${siteMetadata.siteRepo}/blob/main/data/${path}`
@@ -24,13 +25,13 @@ const postDateTemplate: Intl.DateTimeFormatOptions = {
 interface LayoutProps {
   content: CoreContent<Blog>
   authorDetails: CoreContent<Authors>[]
-  next?: { path: string; title: string }
-  prev?: { path: string; title: string }
+  next?: { path: string; title: string; filePath: string }
+  prev?: { path: string; title: string; filePath: string }
   children: ReactNode
 }
 
-export default function PostLayout({ content, authorDetails, next, prev, children }: LayoutProps) {
-  const { filePath, path, slug, date, title, tags } = content
+export default function PostLayout({ content, next, prev, children }: LayoutProps) {
+  const { filePath, path, slug, date, title, tags, authors } = content
   const basePath = path.split('/')[0]
 
   return (
@@ -51,7 +52,9 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                 </div>
               </dl>
               <div>
-                <PageTitle>{title}</PageTitle>
+                <PageTitle data-editable="text" data-prop="title">
+                  {title}
+                </PageTitle>
               </div>
             </div>
           </header>
@@ -59,42 +62,25 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
             <dl className="pt-6 pb-10 xl:border-b xl:border-gray-200 xl:pt-11 xl:dark:border-gray-700">
               <dt className="sr-only">Authors</dt>
               <dd>
-                <ul className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-y-8 xl:space-x-0">
-                  {authorDetails.map((author) => (
-                    <li className="flex items-center space-x-2" key={author.name}>
-                      {author.avatar && (
-                        <Image
-                          src={author.avatar}
-                          width={38}
-                          height={38}
-                          alt="avatar"
-                          className="h-10 w-10 rounded-full"
-                        />
-                      )}
-                      <dl className="text-sm leading-5 font-medium whitespace-nowrap">
-                        <dt className="sr-only">Name</dt>
-                        <dd className="text-gray-900 dark:text-gray-100">{author.name}</dd>
-                        <dt className="sr-only">Twitter</dt>
-                        <dd>
-                          {author.twitter && (
-                            <Link
-                              href={author.twitter}
-                              className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
-                            >
-                              {author.twitter
-                                .replace('https://twitter.com/', '@')
-                                .replace('https://x.com/', '@')}
-                            </Link>
-                          )}
-                        </dd>
-                      </dl>
-                    </li>
-                  ))}
+                <ul
+                  className="flex flex-wrap justify-center gap-4 sm:space-x-12 xl:block xl:space-y-8 xl:space-x-0"
+                  data-editable="component"
+                  data-component="post_authors"
+                  data-prop-authors="authors"
+                >
+                  <PostAuthors authors={authors} />
                 </ul>
               </dd>
             </dl>
             <div className="divide-y divide-gray-200 xl:col-span-3 xl:row-span-2 xl:pb-0 dark:divide-gray-700">
-              <div className="prose dark:prose-invert max-w-none pt-10 pb-8">{children}</div>
+              <div
+                className="prose dark:prose-invert max-w-none pt-10 pb-8"
+                data-editable="text"
+                data-type="block"
+                data-prop="@content"
+              >
+                {children}
+              </div>
               <div className="pt-6 pb-6 text-sm text-gray-700 dark:text-gray-300">
                 <Link href={discussUrl(path)} rel="nofollow">
                   Discuss on Twitter
@@ -118,10 +104,13 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                     <h2 className="text-xs tracking-wide text-gray-500 uppercase dark:text-gray-400">
                       Tags
                     </h2>
-                    <div className="flex flex-wrap">
-                      {tags.map((tag) => (
-                        <Tag key={tag} text={tag} />
-                      ))}
+                    <div
+                      className="flex flex-wrap"
+                      data-editable="component"
+                      data-component="post_tags"
+                      data-prop-tags="tags"
+                    >
+                      <PostTags tags={tags} />
                     </div>
                   </div>
                 )}
@@ -133,7 +122,11 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           Previous Article
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/${prev.path}`}>{prev.title}</Link>
+                          <Link href={`/${prev.path}`}>
+                            <editable-text data-prop={`@file[${contentFile(prev.filePath)}].title`}>
+                              {prev.title}
+                            </editable-text>
+                          </Link>
                         </div>
                       </div>
                     )}
@@ -143,7 +136,11 @@ export default function PostLayout({ content, authorDetails, next, prev, childre
                           Next Article
                         </h2>
                         <div className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400">
-                          <Link href={`/${next.path}`}>{next.title}</Link>
+                          <Link href={`/${next.path}`}>
+                            <editable-text data-prop={`@file[${contentFile(next.filePath)}].title`}>
+                              {next.title}
+                            </editable-text>
+                          </Link>
                         </div>
                       </div>
                     )}

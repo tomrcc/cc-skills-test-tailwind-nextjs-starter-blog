@@ -7,13 +7,14 @@ import Link from '@/components/Link'
 import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
 import siteMetadata from '@/data/siteMetadata'
+import { contentFile } from 'lib/files'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 interface LayoutProps {
   content: CoreContent<Blog>
   children: ReactNode
-  next?: { path: string; title: string }
-  prev?: { path: string; title: string }
+  next?: { path: string; title: string; filePath: string }
+  prev?: { path: string; title: string; filePath: string }
 }
 
 export default function PostLayout({ content, next, prev, children }: LayoutProps) {
@@ -35,13 +36,22 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                 </div>
               </dl>
               <div>
-                <PageTitle>{title}</PageTitle>
+                <PageTitle data-editable="text" data-prop="title">
+                  {title}
+                </PageTitle>
               </div>
             </div>
           </header>
           <div className="grid-rows-[auto_1fr] divide-y divide-gray-200 pb-8 xl:divide-y-0 dark:divide-gray-700">
             <div className="divide-y divide-gray-200 xl:col-span-3 xl:row-span-2 xl:pb-0 dark:divide-gray-700">
-              <div className="prose dark:prose-invert max-w-none pt-10 pb-8">{children}</div>
+              <div
+                className="prose dark:prose-invert max-w-none pt-10 pb-8"
+                data-editable="text"
+                data-type="block"
+                data-prop="@content"
+              >
+                {children}
+              </div>
             </div>
             {siteMetadata.comments && (
               <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300" id="comment">
@@ -57,7 +67,10 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                       className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                       aria-label={`Previous post: ${prev.title}`}
                     >
-                      &larr; {prev.title}
+                      &larr;{' '}
+                      <editable-text data-prop={`@file[${contentFile(prev.filePath)}].title`}>
+                        {prev.title}
+                      </editable-text>
                     </Link>
                   </div>
                 )}
@@ -68,7 +81,10 @@ export default function PostLayout({ content, next, prev, children }: LayoutProp
                       className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                       aria-label={`Next post: ${next.title}`}
                     >
-                      {next.title} &rarr;
+                      <editable-text data-prop={`@file[${contentFile(next.filePath)}].title`}>
+                        {next.title}
+                      </editable-text>{' '}
+                      &rarr;
                     </Link>
                   </div>
                 )}

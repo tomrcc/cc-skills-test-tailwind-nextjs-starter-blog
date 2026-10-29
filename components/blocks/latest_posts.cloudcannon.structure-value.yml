@@ -1,0 +1,21 @@
+label: Latest posts
+icon: view_list
+picker_preview:
+  text:
+    - Latest posts
+  icon:
+    - view_list
+preview:
+  text:
+    - Latest posts
+  icon:
+    - view_list
+value:
+  _type: latest_posts
+  count: 5
+_inputs:
+  count:
+    type: number
+    label: Number of posts
+    options:
+      min: 1

@@ -1,0 +1,35 @@
+label: Author profile
+icon: person
+picker_preview:
+  text:
+    - Author profile
+  icon:
+    - person
+preview:
+  text:
+    - key: heading
+    - Author profile
+  subtext:
+    - key: author
+  icon:
+    - person
+value:
+  _type: author_profile
+  heading: About
+  author: default
+_inputs:
+  heading:
+    type: text
+  author:
+    type: select
+    comment: Edit the author's details and bio in Authors
+    options:
+      value_key: filename_without_ext
+      preview:
+        text:
+          - key: name
+        image:
+          - key: avatar
+        icon:
+          - person
+      values: collections.authors

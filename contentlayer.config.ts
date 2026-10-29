@@ -1,4 +1,9 @@
-import { defineDocumentType, ComputedFields, makeSource } from 'contentlayer2/source-files'
+import {
+  defineDocumentType,
+  ComputedFields,
+  makeSource,
+  contentDirExcludeDefault,
+} from 'contentlayer2/source-files'
 import { writeFileSync } from 'fs'
 import readingTime from 'reading-time'
 import { slug } from 'github-slugger'
@@ -147,9 +152,27 @@ export const Authors = defineDocumentType(() => ({
   computedFields,
 }))
 
+export const Page = defineDocumentType(() => ({
+  name: 'Page',
+  filePathPattern: 'pages/*.md',
+  contentType: 'mdx',
+  fields: {
+    _schema: { type: 'string' },
+    title: { type: 'string', required: true },
+    description: { type: 'string' },
+    content_blocks: { type: 'json' },
+  },
+  computedFields: {
+    // flattenedPath drops `index`, so the file name is the slug.
+    slug: { type: 'string', resolve: (doc) => doc._raw.sourceFileName.replace(/\.md$/, '') },
+  },
+}))
+
 export default makeSource({
   contentDirPath: 'data',
-  documentTypes: [Blog, Authors],
+  // settings/ holds CloudCannon data files that no document type reads.
+  contentDirExclude: [...contentDirExcludeDefault, 'settings'],
+  documentTypes: [Blog, Authors, Page],
   mdx: {
     cwd: process.cwd(),
     remarkPlugins: [

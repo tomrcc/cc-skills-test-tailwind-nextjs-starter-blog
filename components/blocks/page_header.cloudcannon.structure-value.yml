@@ -1,0 +1,24 @@
+label: Page header
+icon: title
+picker_preview:
+  text:
+    - Page header
+  icon:
+    - title
+preview:
+  text:
+    - key: title
+    - Page header
+  subtext:
+    - key: description
+  icon:
+    - title
+value:
+  _type: page_header
+  title:
+  description:
+_inputs:
+  title:
+    type: text
+  description:
+    type: textarea

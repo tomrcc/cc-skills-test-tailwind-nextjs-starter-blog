@@ -8,19 +8,25 @@ import Link from '@/components/Link'
 import PageTitle from '@/components/PageTitle'
 import SectionContainer from '@/components/SectionContainer'
 import siteMetadata from '@/data/siteMetadata'
+import { contentFile } from 'lib/files'
 import ScrollTopAndComment from '@/components/ScrollTopAndComment'
 
 interface LayoutProps {
   content: CoreContent<Blog>
   children: ReactNode
-  next?: { path: string; title: string }
-  prev?: { path: string; title: string }
+  next?: { path: string; title: string; filePath: string }
+  prev?: { path: string; title: string; filePath: string }
 }
 
 export default function PostMinimal({ content, next, prev, children }: LayoutProps) {
   const { slug, title, images } = content
   const displayImage =
     images && images.length > 0 ? images[0] : 'https://picsum.photos/seed/picsum/800/400'
+  // The placeholder has no field to bind.
+  const imageRegion =
+    Array.isArray(images) && images.length > 0
+      ? { 'data-editable': 'image', 'data-prop-src': 'images.0' }
+      : {}
 
   return (
     <SectionContainer>
@@ -31,15 +37,30 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
             <div className="w-full">
               <Bleed>
                 <div className="relative aspect-2/1 w-full">
-                  <Image src={displayImage} alt={title} fill className="object-cover" />
+                  <Image
+                    src={displayImage}
+                    alt={title}
+                    fill
+                    className="object-cover"
+                    {...imageRegion}
+                  />
                 </div>
               </Bleed>
             </div>
             <div className="relative pt-10">
-              <PageTitle>{title}</PageTitle>
+              <PageTitle data-editable="text" data-prop="title">
+                {title}
+              </PageTitle>
             </div>
           </div>
-          <div className="prose dark:prose-invert max-w-none py-4">{children}</div>
+          <div
+            className="prose dark:prose-invert max-w-none py-4"
+            data-editable="text"
+            data-type="block"
+            data-prop="@content"
+          >
+            {children}
+          </div>
           {siteMetadata.comments && (
             <div className="pt-6 pb-6 text-center text-gray-700 dark:text-gray-300" id="comment">
               <Comments slug={slug} />
@@ -54,7 +75,10 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
                     className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     aria-label={`Previous post: ${prev.title}`}
                   >
-                    &larr; {prev.title}
+                    &larr;{' '}
+                    <editable-text data-prop={`@file[${contentFile(prev.filePath)}].title`}>
+                      {prev.title}
+                    </editable-text>
                   </Link>
                 </div>
               )}
@@ -65,7 +89,10 @@ export default function PostMinimal({ content, next, prev, children }: LayoutPro
                     className="text-primary-500 hover:text-primary-600 dark:hover:text-primary-400"
                     aria-label={`Next post: ${next.title}`}
                   >
-                    {next.title} &rarr;
+                    <editable-text data-prop={`@file[${contentFile(next.filePath)}].title`}>
+                      {next.title}
+                    </editable-text>{' '}
+                    &rarr;
                   </Link>
                 </div>
               )}

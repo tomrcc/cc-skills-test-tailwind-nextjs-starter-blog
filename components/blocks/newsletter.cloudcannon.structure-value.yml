@@ -1,0 +1,20 @@
+label: Newsletter sign-up
+icon: mail
+picker_preview:
+  text:
+    - Newsletter sign-up
+  icon:
+    - mail
+preview:
+  text:
+    - key: title
+    - Newsletter sign-up
+  icon:
+    - mail
+value:
+  _type: newsletter
+  title: Subscribe to the newsletter
+_inputs:
+  title:
+    type: text
+    comment: The form works on the live site only, not in CloudCannon previews

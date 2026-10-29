@@ -1,0 +1,21 @@
+{
+  "title": "Next.js Starter Blog",
+  "author": "Tails Azimuth",
+  "headerTitle": "TailwindBlog",
+  "description": "A blog created with Next.js and Tailwind.css",
+  "email": "address@yoursite.com",
+  "github": "https://github.com",
+  "facebook": "https://facebook.com",
+  "youtube": "https://youtube.com",
+  "linkedin": "https://www.linkedin.com",
+  "twitter": "",
+  "bluesky": "https://bsky.app/",
+  "x": "https://twitter.com/x",
+  "instagram": "https://www.instagram.com",
+  "threads": "https://www.threads.net",
+  "medium": "https://medium.com",
+  "themeCredit": {
+    "text": "Tailwind Nextjs Theme",
+    "href": "https://github.com/timlrx/tailwind-nextjs-starter-blog"
+  }
+}

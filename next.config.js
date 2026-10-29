@@ -54,9 +54,11 @@ const securityHeaders = [
   },
 ]
 
-const output = process.env.EXPORT ? 'export' : undefined
+// Only the CloudCannon build sets CLOUDCANNON_EXPORT; production keeps the server build.
+const cloudCannonExport = process.env.CLOUDCANNON_EXPORT === 'true'
+const output = process.env.EXPORT || cloudCannonExport ? 'export' : undefined
 const basePath = process.env.BASE_PATH || undefined
-const unoptimized = process.env.UNOPTIMIZED ? true : undefined
+const unoptimized = process.env.UNOPTIMIZED || cloudCannonExport ? true : undefined
 
 /**
  * @type {import('next/dist/next-server/server/config').NextConfig}
